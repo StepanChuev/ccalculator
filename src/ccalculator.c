@@ -12,6 +12,11 @@ int main(int argc, char **argv){
 
 	printf("\n");
 
+	for (int i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
+		free(tokens[i].name);
+		free(tokens[i].value);
+	}
+
 	free(tokens);
 
 	return 0;
