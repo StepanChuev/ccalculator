@@ -4,7 +4,7 @@
 #include "lexer.h"
 
 int main(int argc, char **argv){
-	char *expression = "  -12.5   +3.0    * -9  -17  ;";
+	char *expression = "  -12.5   +3.0    * -9  --17  ;";
 	char *normalized = normalize(expression);
 	Token *tokens = getTokensFromExpression(normalized);
 
