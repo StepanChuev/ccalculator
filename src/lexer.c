@@ -45,7 +45,7 @@ Token *getTokensFromExpression(char *expression){
 const char *getTokenName(char *expression, int index){
 	if (
 		isdigit(expression[index]) || expression[index] == '.' || 
-		(expression[index] == '-' && isdigit(expression[index + 1]))
+		(expression[index] == '-' && (index == 0 || strchr(ALL_OPERATORS, expression[index - 1])))
 	){
 		return NUMBER_TOKEN;
 	}
@@ -55,4 +55,23 @@ const char *getTokenName(char *expression, int index){
 	}
 
 	return END_TOKEN;
+}
+
+char *normalize(char *expression){
+	int lenNormalized = 10000;
+	int normalizedIndex = 0;
+	char *normalized = (char *)malloc(lenNormalized * sizeof(char));
+
+	for (int i = 0; expression[i] != '\0'; i++){
+		if (expression[i] == ' '){
+			continue;
+		}
+
+		normalized[normalizedIndex++] = expression[i];
+	}
+
+	strcpy(normalized + normalizedIndex, END_TOKEN);
+	normalized[++normalizedIndex] = '\0';
+
+	return normalized;
 }

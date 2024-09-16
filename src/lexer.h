@@ -6,7 +6,6 @@
 #define OPERATOR_TOKEN "op"
 #define END_TOKEN ";"
 
-#define END_OPERATOR ";"
 #define PLUS_OPERATOR "+"
 #define MINUS_OPERATOR "-"
 #define MULTIPLY_OPERATOR "*"
@@ -22,5 +21,6 @@ typedef struct {
 
 Token *getTokensFromExpression(char *expression);
 const char *getTokenName(char *expression, int index);
+char *normalize(char *expression);
 
 #endif
