@@ -1,16 +1,8 @@
+#include "operators.h"
+
 #ifndef LEXER_H
 
 #define LEXER_H
-
-#define NUMBER_TOKEN "num"
-#define OPERATOR_TOKEN "op"
-#define END_TOKEN ";"
-
-#define PLUS_OPERATOR "+"
-#define MINUS_OPERATOR "-"
-#define MULTIPLY_OPERATOR "*"
-#define DIVIDE_OPERATOR "/"
-#define ALL_OPERATORS "+-*/"
 
 #define MAX_LEN_TOKEN_NAME 4
 #define MAX_LEN_TOKEN_VALUE 312

@@ -4,7 +4,7 @@
 #include "lexer.h"
 
 int main(int argc, char **argv){
-	char *expression = "  -12.5   +3.0    * -9  --17  ;";
+	char *expression = "  -12.5   +3.0    * -9  --17  ";
 	char *normalized = normalize(expression);
 	Token *tokens = getTokensFromExpression(normalized);
 
@@ -16,10 +16,15 @@ int main(int argc, char **argv){
 
 	printf("\n");
 
-	for (int i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
+	int i;
+
+	for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
 		free(tokens[i].name);
 		free(tokens[i].value);
 	}
+
+	free(tokens[i].name);
+	free(tokens[i].value);
 
 	free(tokens);
 	free(normalized);
