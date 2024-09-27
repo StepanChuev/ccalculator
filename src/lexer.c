@@ -74,6 +74,14 @@ char *normalize(char *srcExp){
 		}
 
 		if (normalizedIndex + 1 >= lenNormalized){
+			if (lenNormalized >= limit){
+				normalized[normalizedIndex++] = srcExp[i];
+				strcpy(normalized + normalizedIndex, END_TOKEN);
+				normalized[++normalizedIndex] = '\0';
+
+				return normalized;
+			}
+
 			if ((long long int)lenNormalized * 2 >= limit){
 				lenNormalized = limit;
 			}
