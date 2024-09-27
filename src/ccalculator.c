@@ -10,13 +10,13 @@ int main(int argc, char **argv){
 
 	printf("%s -> %s\n", expression, normalized);
 
-	for (int i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
+	for (size_t i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
 		printf("%s(%s) ", tokens[i].name, tokens[i].value);
 	}
 
 	printf("\n");
 
-	int i;
+	size_t i;
 
 	for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
 		free(tokens[i].name);

@@ -5,10 +5,10 @@
 #include "lexer.h"
 
 Token *getTokensFromExpression(char *expression){
-	int lenTokens = 1000;
-	int tokensIndex = 0;
-	int startValueIndex = 0;
-	int lenTokenValue = 0;
+	size_t lenTokens = 1000;
+	size_t tokensIndex = 0;
+	size_t startValueIndex = 0;
+	size_t lenTokenValue = 0;
 
 	Token *tokens = (Token *)malloc(lenTokens * sizeof(Token));
 	tokens[0].name = (char *)malloc(MAX_LEN_TOKEN_NAME * sizeof(char));
@@ -16,10 +16,10 @@ Token *getTokensFromExpression(char *expression){
 
 	strcpy(tokens[0].name, getTokenName(expression, 0));
 
-	for (int i = 1; expression[i] != '\0'; i++){
+	for (size_t i = 1; expression[i] != '\0'; i++){
 		if (tokensIndex + 1 >= lenTokens){
-			if ((long long int)lenTokens * 2 >= INT_MAX){
-				lenTokens = INT_MAX;
+			if ((long long int)lenTokens * 2 >= UINT_MAX){
+				lenTokens = UINT_MAX;
 			}
 
 			else {
@@ -47,7 +47,7 @@ Token *getTokensFromExpression(char *expression){
 	return tokens;
 }
 
-const char *getTokenName(char *expression, int index){
+const char *getTokenName(char *expression, size_t index){
 	if (
 		isdigit(expression[index]) || expression[index] == '.' || 
 		(expression[index] == '-' && (index == 0 || strchr(ALL_OPERATORS, expression[index - 1])))
@@ -63,12 +63,12 @@ const char *getTokenName(char *expression, int index){
 }
 
 char *normalize(char *srcExp){
-	const int limit = INT_MAX - 2;
-	int lenNormalized = 1000;
-	int normalizedIndex = 0;
+	const size_t limit = UINT_MAX - 2;
+	size_t lenNormalized = 1000;
+	size_t normalizedIndex = 0;
 	char *normalized = (char *)malloc(lenNormalized * sizeof(char));
 
-	for (int i = 0; srcExp[i] != '\0'; i++){
+	for (size_t i = 0; srcExp[i] != '\0'; i++){
 		if (srcExp[i] == ' '){
 			continue;
 		}

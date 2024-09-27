@@ -13,7 +13,7 @@ typedef struct {
 } Token;
 
 Token *getTokensFromExpression(char *expression);
-const char *getTokenName(char *expression, int index);
+const char *getTokenName(char *expression, size_t index);
 char *normalize(char *srcExp);
 
 #endif
