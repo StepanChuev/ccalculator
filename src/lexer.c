@@ -52,7 +52,8 @@ Token *getTokensFromExpression(char *expression){
 const char *getTokenName(char *expression, size_t index){
 	if (
 		isdigit(expression[index]) || expression[index] == '.' || 
-		(expression[index] == '-' && (index == 0 || strchr(ALL_OPERATORS, expression[index - 1])))
+		(expression[index] == '-' && (index == 0 || strchr(ALL_OPERATORS, expression[index - 1]))) ||
+		((expression[index] == 'e' || expression[index] == 'E') && isdigit(expression[index - 1]) && isdigit(expression[index + 1]))
 	){
 		return NUMBER_TOKEN;
 	}
