@@ -23,7 +23,7 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 			operators->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 			strcpy((char *)operators->value, tokens[i].value);
 
-			if (getOperatorPriority(((char *)(operators->value))[0]) < getOperatorPriority(((char *)(tokens[i + 2].value))[0])){
+			if (getOperatorPriority((char *)operators->value) < getOperatorPriority((char *)tokens[i + 2].value)){
 				current = *moveElementsToAST(&current, &operators, &operands);
 			}
 		}
@@ -38,7 +38,7 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 }
 
 BinaryTreeNode **moveElementsToAST(BinaryTreeNode **current, Stack **operators, Stack **operands){
-	while (*operands != NULL){ //  && operators != NULL
+	while (*operands != NULL){
 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 		strcpy((char *)(*current)->value, (*operators)->value);
 		*operators = popFromStack(*operators);
