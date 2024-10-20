@@ -44,6 +44,8 @@ Token *getTokensFromExpression(char *expression){
 		}
 	}
 
+	strcpy(tokens[tokensIndex].value, END_TOKEN);
+
 	return tokens;
 }
 

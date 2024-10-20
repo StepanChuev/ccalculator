@@ -12,4 +12,6 @@
 #define DIVIDE_OPERATOR "/"
 #define ALL_OPERATORS "+-*/"
 
+int getOperatorPriority(char operator);
+
 #endif

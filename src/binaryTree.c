@@ -2,12 +2,12 @@
 #include <string.h>
 #include "binaryTree.h"
 
-BinaryTreeNode *createBinaryTreeNode(void *value, BinaryTreeNode *left, BinaryTreeNode *right){
+BinaryTreeNode *createBinaryTreeNode(void){
 	BinaryTreeNode *root = (BinaryTreeNode *)malloc(sizeof(BinaryTreeNode));
 
-	root->value = value;
-	root->left = left;
-	root->right = right;
+	root->value = NULL;
+	root->left = NULL;
+	root->right = NULL;
 
 	return root;
 }

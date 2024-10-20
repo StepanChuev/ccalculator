@@ -1,8 +1,8 @@
-#include "operators.h"
-
 #ifndef LEXER_H
 
 #define LEXER_H
+
+#include "operators.h"
 
 #define MAX_LEN_TOKEN_NAME 4
 #define MAX_LEN_TOKEN_VALUE 312
