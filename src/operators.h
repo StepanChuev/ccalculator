@@ -10,7 +10,9 @@
 #define MINUS_OPERATOR "-"
 #define MULTIPLY_OPERATOR "*"
 #define DIVIDE_OPERATOR "/"
-#define ALL_OPERATORS "+-*/"
+#define OPENPAREN_OPERATOR "("
+#define CLOSEPAREN_OPERATOR ")"
+#define ALL_OPERATORS "+-*/()"
 
 int getOperatorPriority(char *operator);
 

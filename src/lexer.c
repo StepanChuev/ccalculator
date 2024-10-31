@@ -29,7 +29,7 @@ Token *getTokensFromExpression(char *expression){
 			tokens = (Token *)realloc(tokens, lenTokens * sizeof(Token));
 		}
 
-		if (strcmp(tokens[tokensIndex].name, getTokenName(expression, i))){
+		if (strcmp(tokens[tokensIndex].name, getTokenName(expression, i)) || !strcmp(OPERATOR_TOKEN, getTokenName(expression, i))){
 			lenTokenValue = i - startValueIndex;
 
 			strncpy(tokens[tokensIndex].value, expression + startValueIndex, lenTokenValue);
@@ -52,7 +52,7 @@ Token *getTokensFromExpression(char *expression){
 const char *getTokenName(char *expression, size_t index){
 	if (
 		isdigit(expression[index]) || expression[index] == '.' || 
-		(expression[index] == '-' && (index == 0 || strchr(ALL_OPERATORS, expression[index - 1]))) ||
+		(expression[index] == '-' && (index == 0 || strchr(ALL_OPERATORS, expression[index - 1])) && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])) ||
 		((expression[index] == 'e' || expression[index] == 'E') && isdigit(expression[index - 1]) && isdigit(expression[index + 1]))
 	){
 		return NUMBER_TOKEN;
