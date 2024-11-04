@@ -7,6 +7,6 @@
 #include "stack.h"
 
 BinaryTreeNode *buildASTFromTokens(Token *tokens);
-BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **operators, Stack **operands);
+BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **stack);
 
 #endif

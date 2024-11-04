@@ -4,6 +4,7 @@
 
 #define NUMBER_TOKEN "num"
 #define OPERATOR_TOKEN "op"
+#define CONSTANT_TOKEN "con"
 #define END_TOKEN ";"
 
 #define PLUS_OPERATOR "+"

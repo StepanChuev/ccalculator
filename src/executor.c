@@ -1,10 +1,17 @@
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 #include "operators.h"
+#include "lexer.h"
+#include "constants.h"
 #include "executor.h"
 
 double execute(BinaryTreeNode *root){
-	if (root->left == NULL && root->right == NULL){
+	if (!strchr(ALL_OPERATORS, ((char *)(root->value))[0])){ // strcmp(getTokenName(root->value, 0), OPERATOR_TOKEN)
+		if (((char *)(root->value))[0] >= 'a' && ((char *)(root->value))[0] <= 'z'){
+			return getConstantValue(root->value);
+		}
+
 		return atof(root->value);
 	}
 

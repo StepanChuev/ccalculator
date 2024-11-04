@@ -12,8 +12,7 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 	BinaryTreeNode *current = createBinaryTreeNode();
 	BinaryTreeNode *root = current;
 	BinaryTreeNode *parenAST = NULL;
-	Stack *operands = NULL;
-	Stack *operators = NULL; 
+	Stack *stack = NULL;
 
 	for (size_t i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
 		if (strchr(CLOSEPAREN_OPERATOR, tokens[i].value[0]) && countParen <= 0){
@@ -30,80 +29,130 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 		if (strchr(OPENPAREN_OPERATOR, tokens[i].value[0])){
 			parenAST = buildASTFromTokens(tokens + i + 1);
 
-			operands = pushToStack(operands);
-			operands->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			sprintf((char *)operands->value, "%0.15f", execute(parenAST));
+			stack = pushToStack(stack);
+			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+			sprintf((char *)stack->value, "%0.15f", execute(parenAST));
 			freeBinaryTree(parenAST);
 			countParen++;
 
 			continue;
 		}
 
-		if (!strcmp(tokens[i].name, NUMBER_TOKEN)){
-			operands = pushToStack(operands);
-			operands->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			strcpy((char *)operands->value, tokens[i].value);
+		if (!strcmp(tokens[i].name, NUMBER_TOKEN) || !strcmp(tokens[i].name, CONSTANT_TOKEN)){
+			stack = pushToStack(stack);
+			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+			strcpy((char *)stack->value, tokens[i].value);
 		}
 
 		else if (strchr(ALL_OPERATORS, tokens[i].value[0])){
-			operators = pushToStack(operators);
-			operators->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			strcpy((char *)operators->value, tokens[i].value);
+			stack = pushToStack(stack);
+			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+			strcpy((char *)stack->value, tokens[i].value);
 
 			if (
-				(prior = getOperatorPriority((char *)operators->value)) < getOperatorPriority((char *)tokens[i + 2].value) || 
+				(prior = getOperatorPriority((char *)stack->value)) < getOperatorPriority((char *)tokens[i + 2].value) || 
 				prior < getOperatorPriority((char *)tokens[i + 1].value)
 			){
-				current = moveElementsToAST(&current, &operators, &operands);
+				current = moveElementsToAST(&current, &stack);
 
-				freeStack(operators);
-				freeStack(operands);
+				freeStack(stack);
 			}
 		}
 	}
 
-	current = moveElementsToAST(&current, &operators, &operands);
+	current = moveElementsToAST(&current, &stack);
 
-	freeStack(operators);
-	freeStack(operands);
+	freeStack(stack);
 
 	return root;
 }
 
-BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **operators, Stack **operands){
-	if (*operators == NULL && *operands != NULL){
+BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **stack){
+	BinaryTreeNode **retNode = &(*current)->right;
+
+	if (!strcmp(getTokenName((*stack)->value, 0), OPERATOR_TOKEN) && (*stack)->next != NULL){
 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-		strcpy((char *)(*current)->value, (*operands)->value);
+		strcpy((char *)(*current)->value, (*stack)->value);
+		*stack = popFromStack(*stack);
+
+		(*current)->left = createBinaryTreeNode();
+		(*current)->right = createBinaryTreeNode();
+		*current = (*current)->left;
 	}
 
-	while (*operands != NULL && *operators != NULL){
+	if ((*stack)->next == NULL){
 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-		strcpy((char *)(*current)->value, (*operators)->value);
-		*operators = popFromStack(*operators);
+		strcpy((char *)(*current)->value, (*stack)->value);
+		*stack = popFromStack(*stack);
 
 		(*current)->left = createBinaryTreeNode();
 		(*current)->right = createBinaryTreeNode();
 
-		if ((*operands)->next != NULL){
-			(*current)->right->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			strcpy((char *)(*current)->right->value, (*operands)->value);
-			*operands = popFromStack(*operands);
-		}
-
-		// another if-construction
-		if ((*operands)->next == NULL){
-			(*current)->left->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			strcpy((char *)(*current)->left->value, (*operands)->value);
-			*operands = popFromStack(*operands);
-
-			current = &(*current)->right;
-		}
-
-		
-		else {
-			current = &(*current)->left;
-		}
+		return *retNode;
 	}
 
-	return *current;
+	while (*stack != NULL){
+		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+		strcpy((char *)(*current)->value, (*stack)->next->value);
+
+		(*current)->left = createBinaryTreeNode();
+		(*current)->right = createBinaryTreeNode();
+
+		(*current)->right->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+		strcpy((char *)(*current)->right->value, (*stack)->value);
+		*stack = popFromStack(*stack);
+
+		if ((*stack)->next->next == NULL){
+			(*current)->left->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+			strcpy((char *)(*current)->left->value, (*stack)->next->value);
+			*stack = popFromStack(*stack);
+		}
+
+		*stack = popFromStack(*stack);
+		*current = (*current)->left;
+	}
+
+	return *retNode;
 }
+
+// BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Token **tokens, size_t start, size_t end){
+// 	size_t i = start;
+// 	BinaryTreeNode **retNode = &(*current)->right;
+
+// 	if (start == end){
+// 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+// 		strcpy((char *)(*current)->value, (*tokens)[i].value);
+
+// 		(*current)->left = createBinaryTreeNode();
+// 		(*current)->right = createBinaryTreeNode();
+// 	}
+
+// 	else if (strcmp((*tokens)[start].name, OPERATOR_TOKEN)){
+// 		i--;
+// 	}
+
+// 	while (i > end){
+// 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+// 		strcpy((char *)(*current)->value, (*tokens)[i].value);
+
+// 		(*current)->left = createBinaryTreeNode();
+// 		(*current)->right = createBinaryTreeNode();
+		
+// 		if (i + 1 <= start){
+// 			(*current)->right->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+// 			strcpy((char *)(*current)->right->value, (*tokens)[i + 1].value);
+// 		}
+
+// 		if (i < end + 2){
+// 			(*current)->left->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+// 			strcpy((char *)(*current)->left->value, (*tokens)[i - 1].value);
+
+// 			break;
+// 		}
+
+// 		*current = (*current)->left;
+// 		i -= 2;
+// 	}
+
+// 	return *retNode;
+// }

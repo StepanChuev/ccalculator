@@ -7,7 +7,7 @@
 #include "executor.h"
 
 int main(int argc, char **argv){
-	char *expression = "4+12*(7-5)"; // "  -12.5   +3.0    * -9  --17  "
+	char *expression = "4*pi+12*(7-5)"; // "  -12.5   +3.0    * -9  --17  "
 	char *normalized = normalize(expression);
 	Token *tokens = getTokensFromExpression(normalized);
 	BinaryTreeNode *AST = buildASTFromTokens(tokens);
@@ -15,7 +15,6 @@ int main(int argc, char **argv){
 	printf("%p\n", AST);
 	printf("%s\n", (char *)AST->value);
 	printf("%s -> %s\n", expression, normalized);
-	// printf("%f %f %f %f\n", getResultFromOperator("+", 45.0, 34.7), getResultFromOperator("-", 45.0, 34.7), getResultFromOperator("*", 45.0, 1.5), getResultFromOperator("/", 12.0, 3.4));
 
 	size_t i;
 

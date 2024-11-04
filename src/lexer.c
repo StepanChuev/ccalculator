@@ -62,6 +62,10 @@ const char *getTokenName(char *expression, size_t index){
 		return OPERATOR_TOKEN;
 	}
 
+	if (expression[index] >= 'a' && expression[index] <= 'z'){
+		return CONSTANT_TOKEN;
+	}
+
 	return END_TOKEN;
 }
 
