@@ -44,7 +44,7 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 			strcpy((char *)stack->value, tokens[i].value);
 		}
 
-		else if (strchr(ALL_OPERATORS, tokens[i].value[0])){
+		else if (!strcmp(tokens[i].name, OPERATOR_TOKEN)){ // strchr(ALL_OPERATORS, tokens[i].value[0])
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 			strcpy((char *)stack->value, tokens[i].value);

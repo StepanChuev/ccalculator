@@ -7,11 +7,11 @@
 #include "executor.h"
 
 double execute(BinaryTreeNode *root){
-	if (!strchr(ALL_OPERATORS, ((char *)(root->value))[0])){ // strcmp(getTokenName(root->value, 0), OPERATOR_TOKEN)
-		if (((char *)(root->value))[0] >= 'a' && ((char *)(root->value))[0] <= 'z'){
-			return getConstantValue(root->value);
-		}
+	if (((char *)(root->value))[0] >= 'a' && ((char *)(root->value))[0] <= 'z'){
+		return getConstantValue(root->value);
+	}
 
+	if (isdigit(((char *)(root->value))[0]) || (((char *)(root->value))[0] == '-' && isdigit(((char *)(root->value))[1]))){
 		return atof(root->value);
 	}
 
