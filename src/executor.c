@@ -7,15 +7,15 @@
 #include "executor.h"
 
 double execute(BinaryTreeNode *root){
-	if (((char *)(root->value))[0] >= 'a' && ((char *)(root->value))[0] <= 'z'){
+	if (!strcmp(getTokenName(root->value, 0), CONSTANT_TOKEN)){
 		return getConstantValue(root->value);
 	}
 
-	if (isdigit(((char *)(root->value))[0]) || (((char *)(root->value))[0] == '-' && isdigit(((char *)(root->value))[1]))){
-		return atof(root->value);
+	if (!strcmp(getTokenName(root->value, 0), OPERATOR_TOKEN)){
+		return getResultFromOperator((char *)root->value, execute(root->left), execute(root->right));
 	}
 
-	return getResultFromOperator((char *)root->value, execute(root->left), execute(root->right));
+	return atof(root->value);
 }
 
 double getResultFromOperator(char *operator, double operand1, double operand2){

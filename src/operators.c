@@ -10,9 +10,5 @@ int getOperatorPriority(char *operator){
 		return 2;
 	}
 
-	if (!strcmp(OPENPAREN_OPERATOR, operator)){
-		return 3;
-	}
-
 	return -1;
 }

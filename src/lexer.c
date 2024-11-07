@@ -5,7 +5,7 @@
 #include "lexer.h"
 
 Token *getTokensFromExpression(char *expression){
-	size_t lenTokens = 1000;
+	size_t lenTokens = 1024;
 	size_t tokensIndex = 0;
 	size_t startValueIndex = 0;
 	size_t lenTokenValue = 0;
@@ -52,18 +52,27 @@ Token *getTokensFromExpression(char *expression){
 const char *getTokenName(char *expression, size_t index){
 	if (
 		isdigit(expression[index]) || expression[index] == '.' || 
-		(expression[index] == '-' && (index == 0 || strchr(ALL_OPERATORS, expression[index - 1])) && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])) ||
-		((expression[index] == 'e' || expression[index] == 'E') && isdigit(expression[index - 1]) && isdigit(expression[index + 1]))
+		(
+			expression[index] == '-' && isdigit(expression[index + 1]) && 
+			(index == 0 || (strchr(ALL_OPERATORS, expression[index - 1]) && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
+		) ||
+		((expression[index] == 'e' || expression[index] == 'E') && index > 0 && isdigit(expression[index - 1]) && isdigit(expression[index + 1]))
 	){
 		return NUMBER_TOKEN;
 	}
 
-	if (strchr(ALL_OPERATORS, expression[index])){
-		return OPERATOR_TOKEN;
+	if (
+		(expression[index] >= 'a' && expression[index] <= 'z') || 
+		(
+			expression[index] == '-' && (expression[index + 1] >= 'a' && expression[index + 1] <= 'z') &&
+			(index == 0 || (strchr(ALL_OPERATORS, expression[index - 1]) && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
+		)
+	){
+		return CONSTANT_TOKEN;
 	}
 
-	if (expression[index] >= 'a' && expression[index] <= 'z'){
-		return CONSTANT_TOKEN;
+	if (strchr(ALL_OPERATORS, expression[index])){
+		return OPERATOR_TOKEN;
 	}
 
 	return END_TOKEN;
@@ -71,7 +80,7 @@ const char *getTokenName(char *expression, size_t index){
 
 char *normalize(char *srcExp){
 	const size_t limit = UINT_MAX - 2;
-	size_t lenNormalized = 1000;
+	size_t lenNormalized = 1024;
 	size_t normalizedIndex = 0;
 	char *normalized = (char *)malloc(lenNormalized * sizeof(char));
 
