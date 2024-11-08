@@ -89,7 +89,7 @@ char *normalize(char *srcExp){
 			continue;
 		}
 
-		if (normalizedIndex + 1 >= lenNormalized){
+		if (normalizedIndex + 3 >= lenNormalized){
 			if (lenNormalized >= limit){
 				normalized[normalizedIndex++] = srcExp[i];
 				strcpy(normalized + normalizedIndex, END_TOKEN);
@@ -107,6 +107,14 @@ char *normalize(char *srcExp){
 			}
 
 			normalized = (char *)realloc(normalized, lenNormalized * sizeof(char));
+		}
+
+		if (
+			normalizedIndex > 0 && srcExp[i] == '(' && normalized[normalizedIndex - 1] == '-' && 
+			(normalizedIndex <= 1 || strchr(ALL_OPERATORS, normalized[normalizedIndex - 2]))
+		){
+			normalized[normalizedIndex++] = '1';
+			normalized[normalizedIndex++] = '*';
 		}
 
 		normalized[normalizedIndex++] = srcExp[i];
