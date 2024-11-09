@@ -7,39 +7,38 @@
 #include "executor.h"
 
 int main(int argc, char **argv){
-	char *expression = "-(4-8)*-(-pi)+12*(7-(-5))"; // "  -12.5   +3.0    * -9  --17  "
-	char *normalized = normalize(expression);
-	Token *tokens = getTokensFromExpression(normalized);
-	BinaryTreeNode *AST = buildASTFromTokens(tokens);
+	const size_t lenExpression = 1024;
+	size_t i = 0;
+	char *expression = NULL;
+	char *normalized = NULL;
+	Token *tokens = NULL;
+	BinaryTreeNode *AST = NULL;
 
-	printf("%p\n", AST);
-	printf("%s\n", (char *)AST->value);
-	printf("%s -> %s\n", expression, normalized);
+	while (1){
+		expression = (char *)malloc(lenExpression * sizeof(char));
 
-	size_t i;
+		printf(">>> ");
+		gets(expression);
 
-	for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
-		printf("%s(%s) ", tokens[i].name, tokens[i].value);
-	}
+		normalized = normalize(expression);
+		tokens = getTokensFromExpression(normalized);
+		AST = buildASTFromTokens(tokens);
 
-	printf("%s(%s) ", tokens[i].name, tokens[i].value);
-
-	printf("\n");
-
-	printf("%f\n", execute(AST));
+		printf("%f\n", execute(AST));
 	
+		for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
+			free(tokens[i].name);
+			free(tokens[i].value);
+		}
 
-	for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
 		free(tokens[i].name);
 		free(tokens[i].value);
+
+		freeBinaryTree(AST);
+		free(tokens);
+		free(normalized);
+		free(expression);
 	}
-
-	free(tokens[i].name);
-	free(tokens[i].value);
-
-	freeBinaryTree(AST);
-	free(tokens);
-	free(normalized);
 
 	return 0;
 }
