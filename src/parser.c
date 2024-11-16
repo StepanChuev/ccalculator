@@ -31,7 +31,7 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			sprintf((char *)stack->value, "%0.15f", execute(parenAST));
+			sprintf((char *)stack->value, "%0.15lf", execute(parenAST));
 			freeBinaryTree(parenAST);
 			countParen++;
 
