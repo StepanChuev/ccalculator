@@ -125,3 +125,16 @@ char *normalize(char *srcExp){
 
 	return normalized;
 }
+
+void freeTokens(Token *tokens){
+	size_t i;
+
+	for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
+		free(tokens[i].name);
+		free(tokens[i].value);
+	}
+
+	free(tokens[i].name);
+	free(tokens[i].value);
+	free(tokens);
+}

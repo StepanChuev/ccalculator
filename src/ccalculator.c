@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> 
 #include "binaryTree.h"
 #include "operators.h"
 #include "parser.h"
@@ -8,55 +8,78 @@
 #include "executor.h"
 #include "io.h"
 
-int main(int argc, char **argv){
+int main(int argc, char *argv[]){
 	const size_t lenExpression = 1024;
 	size_t i = 0;
 	char *expression = NULL;
 	char *normalized = NULL;
 	Token *tokens = NULL;
 	BinaryTreeNode *AST = NULL;
+	FILE *input = NULL;
+	FILE *output = NULL;
 	double result = 0.0;
 
+	if ((input = getIOFile(FILEIN_ARG, "r", argc, argv)) == NULL){
+		input = stdin;
+	}
+
+	if ((output = getIOFile(FILEOUT_ARG, "w", argc, argv)) == NULL){
+		output = stdout;
+	}
+
 	while (1){
-		expression = (char *)malloc(lenExpression * sizeof(char));
+		if (output != stdout){
+			fflush(output);
+		}
 
-		printf(">>> ");
+		if (input == stdin || input == NULL){
+			printf(">>> ");
 
-		if (getExpressionFromStdin(expression, lenExpression) == NULL){
-			fprintf(stderr, "scan failed\n");
-			free(expression);
+			if ((expression = getExpressionFromStdin(lenExpression)) == NULL){
+				fprintf(stderr, "scan failed\n");
+				free(expression);
 
-			continue;
+				continue;
+			}
+		}
+
+		else if (!feof(input)){
+			expression = getExpressionFromFile(input, '\n');
+		}
+
+		else {
+			break;
 		}
 
 		normalized = normalize(expression);
+		tokens = getTokensFromExpression(normalized);
 
-		if (!strcmp(normalized, END_TOKEN)){
+		if (!strcmp(END_TOKEN, tokens[0].name)){
 			fprintf(stderr, "empty expression\n");
+			freeTokens(tokens);
 			free(normalized);
 			free(expression);
 
 			continue;
 		}
 
-		tokens = getTokensFromExpression(normalized);
 		AST = buildASTFromTokens(tokens);
 		result = execute(AST);
 
-		printf("%0.15lf\n", result);
-	
-		for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
-			free(tokens[i].name);
-			free(tokens[i].value);
-		}
-
-		free(tokens[i].name);
-		free(tokens[i].value);
+		fprintf(output, "%0.15lf\n", result);
 
 		freeBinaryTree(AST);
-		free(tokens);
+		freeTokens(tokens);
 		free(normalized);
 		free(expression);
+	}
+
+	if (input != stdin && input != NULL){
+		fclose(input);
+	}
+	
+	if (output != stdout && output != NULL){
+		fclose(output);
 	}
 
 	return 0;

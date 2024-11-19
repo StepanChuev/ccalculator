@@ -15,5 +15,6 @@ typedef struct {
 Token *getTokensFromExpression(char *expression);
 const char *getTokenName(char *expression, size_t index);
 char *normalize(char *srcExp);
+void freeTokens(Token *tokens);
 
 #endif
