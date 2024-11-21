@@ -7,60 +7,52 @@
 #include "binaryTree.h"
 #include "parser.h"
 
+static Token *lastParen = NULL;
+
 BinaryTreeNode *buildASTFromTokens(Token *tokens){
-	int prior = -1, countParen = 0;
-	BinaryTreeNode *current = createBinaryTreeNode();
-	BinaryTreeNode *root = current;
+	BinaryTreeNode *currentNode = createBinaryTreeNode();
+	BinaryTreeNode *root = currentNode;
 	BinaryTreeNode *parenAST = NULL;
 	Stack *stack = NULL;
 
-	for (size_t i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
-		if (strchr(CLOSEPAREN_OPERATOR, tokens[i].value[0]) && countParen <= 0){
+	for (Token *currentToken = tokens; strcmp(currentToken->name, END_TOKEN); currentToken++){
+		if (strchr(CLOSEPAREN_OPERATOR, currentToken->value[0])){
+			lastParen = currentToken;
 			break;
 		}
 
-		if (countParen > 0){
-			countParen += !!strchr(OPENPAREN_OPERATOR, tokens[i].value[0]);
-			countParen -= !!strchr(CLOSEPAREN_OPERATOR, tokens[i].value[0]);
-
-			continue;
-		}
-
-		if (strchr(OPENPAREN_OPERATOR, tokens[i].value[0])){
-			parenAST = buildASTFromTokens(tokens + i + 1);
+		if (strchr(OPENPAREN_OPERATOR, currentToken->value[0])){
+			parenAST = buildASTFromTokens(currentToken + 1);
 
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 			sprintf((char *)stack->value, "%0.15lf", execute(parenAST));
 			freeBinaryTree(parenAST);
-			countParen++;
+			currentToken = lastParen;
 
 			continue;
 		}
 
-		if (!strcmp(tokens[i].name, NUMBER_TOKEN) || !strcmp(tokens[i].name, CONSTANT_TOKEN)){
+		if (!strcmp(currentToken->name, NUMBER_TOKEN) || !strcmp(currentToken->name, CONSTANT_TOKEN)){
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			strcpy((char *)stack->value, tokens[i].value);
+			strcpy((char *)stack->value, currentToken->value);
 		}
 
-		else if (!strcmp(tokens[i].name, OPERATOR_TOKEN)){ // strchr(ALL_OPERATORS, tokens[i].value[0])
+		else if (!strcmp(currentToken->name, OPERATOR_TOKEN)){
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-			strcpy((char *)stack->value, tokens[i].value);
+			strcpy((char *)stack->value, currentToken->value);
 
-			if (
-				(prior = getOperatorPriority((char *)stack->value)) < getOperatorPriority((char *)tokens[i + 2].value) || 
-				prior < getOperatorPriority((char *)tokens[i + 1].value)
-			){
-				current = moveElementsToAST(&current, &stack);
+			if (getOperatorPriority((char *)stack->value) < getOperatorPriority((char *)(currentToken + 2)->value)){
+				currentNode = moveElementsToAST(&currentNode, &stack);
 
 				freeStack(stack);
 			}
 		}
 	}
 
-	current = moveElementsToAST(&current, &stack);
+	currentNode = moveElementsToAST(&currentNode, &stack);
 
 	freeStack(stack);
 
@@ -69,6 +61,10 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 
 BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **stack){
 	BinaryTreeNode **retNode = &(*current)->right;
+
+	if (*stack == NULL){
+		return *current;
+	}
 
 	if (!strcmp(getTokenName((*stack)->value, 0), OPERATOR_TOKEN) && (*stack)->next != NULL){
 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
