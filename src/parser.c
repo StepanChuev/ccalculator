@@ -46,15 +46,11 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 
 			if (getOperatorPriority((char *)stack->value) < getOperatorPriority((char *)(currentToken + 2)->value)){
 				currentNode = moveElementsToAST(&currentNode, &stack);
-
-				freeStack(stack);
 			}
 		}
 	}
 
 	currentNode = moveElementsToAST(&currentNode, &stack);
-
-	freeStack(stack);
 
 	return root;
 }

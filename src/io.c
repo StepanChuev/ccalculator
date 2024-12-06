@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "io.h"
 
 char *getExpressionFromStdin(size_t maxLen){
@@ -19,7 +20,7 @@ char *getExpressionFromStdin(size_t maxLen){
 }
 
 char *getExpressionFromFile(FILE *file, char sep){
-	const size_t limit = UINT_MAX - 1;
+	const size_t limit = SIZE_MAX - 1;
 	size_t lenExpression = 1024, i;
 	char *expression = (char *)malloc(lenExpression * sizeof(char));
 
@@ -49,8 +50,8 @@ char *getExpressionFromFile(FILE *file, char sep){
 char *getFilePathByFlag(const char *flag, int argc, char *argv[]){
 	char *path = NULL;
 
-	for (int i = 0; i < argc; i++){
-		if (!strcmp(flag, argv[i]) && i < argc - 1){
+	for (int i = 0; i < argc - 1; i++){
+		if (!strcmp(flag, argv[i])){
 			path = argv[i + 1];
 			break;
 		}

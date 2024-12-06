@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <limits.h>
+#include <stdint.h>
 #include "lexer.h"
 
 Token *getTokensFromExpression(char *expression){
@@ -18,8 +18,8 @@ Token *getTokensFromExpression(char *expression){
 
 	for (size_t i = 1; expression[i] != '\0'; i++){
 		if (tokensIndex + 1 >= lenTokens){
-			if ((long long int)lenTokens * 2 >= UINT_MAX){
-				lenTokens = UINT_MAX;
+			if ((long long int)lenTokens * 2 >= SIZE_MAX){
+				lenTokens = SIZE_MAX;
 			}
 
 			else {
@@ -79,7 +79,7 @@ const char *getTokenName(char *expression, size_t index){
 }
 
 char *normalize(char *srcExp){
-	const size_t limit = UINT_MAX - 2;
+	const size_t limit = SIZE_MAX - 2;
 	size_t lenNormalized = 1024;
 	size_t normalizedIndex = 0;
 	char *normalized = (char *)malloc(lenNormalized * sizeof(char));
