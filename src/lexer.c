@@ -9,14 +9,15 @@ Token *getTokensFromExpression(char *expression){
 	size_t tokensIndex = 0;
 	size_t startValueIndex = 0;
 	size_t lenTokenValue = 0;
+	int tokenCode = 0;
 
 	Token *tokens = (Token *)malloc(lenTokens * sizeof(Token));
-	tokens[0].name = (char *)malloc(MAX_LEN_TOKEN_NAME * sizeof(char));
 	tokens[0].value = (char *)malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-
-	strcpy(tokens[0].name, getTokenName(expression, 0));
+	tokens[0].code = getTokenCode(expression, 0);
 
 	for (size_t i = 1; expression[i] != '\0'; i++){
+		tokenCode = getTokenCode(expression, i);
+
 		if (tokensIndex + 1 >= lenTokens){
 			if ((long long int)lenTokens * 2 >= SIZE_MAX){
 				lenTokens = SIZE_MAX;
@@ -29,27 +30,25 @@ Token *getTokensFromExpression(char *expression){
 			tokens = (Token *)realloc(tokens, lenTokens * sizeof(Token));
 		}
 
-		if (strcmp(tokens[tokensIndex].name, getTokenName(expression, i)) || !strcmp(OPERATOR_TOKEN, getTokenName(expression, i))){
+		if (tokenCode != tokens[tokensIndex].code || tokenCode == OPERATOR_TOKEN){
 			lenTokenValue = i - startValueIndex;
 
 			strncpy(tokens[tokensIndex].value, expression + startValueIndex, lenTokenValue);
 			tokens[tokensIndex].value[lenTokenValue] = '\0';
 
-			tokens[++tokensIndex].name = (char *)malloc(MAX_LEN_TOKEN_NAME * sizeof(char));
-			tokens[tokensIndex].value = (char *)malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-
-			strcpy(tokens[tokensIndex].name, getTokenName(expression, i));
+			tokens[++tokensIndex].value = (char *)malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+			tokens[tokensIndex].code = tokenCode;
 
 			startValueIndex = i;
 		}
 	}
 
-	strcpy(tokens[tokensIndex].value, END_TOKEN);
+	strcpy(tokens[tokensIndex].value, END_TOKEN_VALUE);
 
 	return tokens;
 }
 
-const char *getTokenName(char *expression, size_t index){
+int getTokenCode(char *expression, size_t index){
 	if (
 		isdigit(expression[index]) || expression[index] == '.' || 
 		(
@@ -120,7 +119,7 @@ char *normalize(char *srcExp){
 		normalized[normalizedIndex++] = srcExp[i];
 	}
 
-	strcpy(normalized + normalizedIndex, END_TOKEN);
+	strcpy(normalized + normalizedIndex, END_TOKEN_VALUE);
 	normalized[++normalizedIndex] = '\0';
 
 	return normalized;
@@ -129,12 +128,10 @@ char *normalize(char *srcExp){
 void freeTokens(Token *tokens){
 	size_t i;
 
-	for (i = 0; strcmp(tokens[i].name, END_TOKEN); i++){
-		free(tokens[i].name);
+	for (i = 0; tokens[i].code != END_TOKEN; i++){
 		free(tokens[i].value);
 	}
 
-	free(tokens[i].name);
 	free(tokens[i].value);
 	free(tokens);
 }

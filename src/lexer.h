@@ -4,21 +4,22 @@
 
 #include "operators.h"
 
-#define MAX_LEN_TOKEN_NAME 4
 #define MAX_LEN_TOKEN_VALUE 312
 
-#define NUMBER_TOKEN "num"
-#define OPERATOR_TOKEN "op"
-#define CONSTANT_TOKEN "con"
-#define END_TOKEN ";"
+#define END_TOKEN 0
+#define OPERATOR_TOKEN 1
+#define NUMBER_TOKEN 2
+#define CONSTANT_TOKEN 3
+
+#define END_TOKEN_VALUE ";"
 
 typedef struct {
-	char *name;
+	int code;
 	char *value;
 } Token;
 
 Token *getTokensFromExpression(char *expression);
-const char *getTokenName(char *expression, size_t index);
+int getTokenCode(char *expression, size_t index);
 char *normalize(char *srcExp);
 void freeTokens(Token *tokens);
 

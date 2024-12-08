@@ -15,7 +15,7 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 	BinaryTreeNode *parenAST = NULL;
 	Stack *stack = NULL;
 
-	for (Token *currentToken = tokens; strcmp(currentToken->name, END_TOKEN); currentToken++){
+	for (Token *currentToken = tokens; currentToken->code != END_TOKEN; currentToken++){
 		if (strchr(CLOSEPAREN_OPERATOR, currentToken->value[0])){
 			lastParen = currentToken;
 			break;
@@ -33,13 +33,13 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 			continue;
 		}
 
-		if (!strcmp(currentToken->name, NUMBER_TOKEN) || !strcmp(currentToken->name, CONSTANT_TOKEN)){
+		if (currentToken->code == NUMBER_TOKEN || currentToken->code == CONSTANT_TOKEN){
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 			strcpy((char *)stack->value, currentToken->value);
 		}
 
-		else if (!strcmp(currentToken->name, OPERATOR_TOKEN)){
+		else if (currentToken->code == OPERATOR_TOKEN){
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 			strcpy((char *)stack->value, currentToken->value);
@@ -62,7 +62,7 @@ BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **stack){
 		return *current;
 	}
 
-	if (!strcmp(getTokenName((*stack)->value, 0), OPERATOR_TOKEN) && (*stack)->next != NULL){
+	if (getTokenCode((*stack)->value, 0) == OPERATOR_TOKEN && (*stack)->next != NULL){
 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 		strcpy((char *)(*current)->value, (*stack)->value);
 		*stack = popFromStack(*stack);

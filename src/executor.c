@@ -7,11 +7,13 @@
 #include "executor.h"
 
 double execute(BinaryTreeNode *root){
-	if (!strcmp(getTokenName(root->value, 0), CONSTANT_TOKEN)){
+	int tokenCode = getTokenCode(root->value, 0);
+
+	if (tokenCode == CONSTANT_TOKEN){
 		return getConstantValue(root->value);
 	}
 
-	if (!strcmp(getTokenName(root->value, 0), OPERATOR_TOKEN)){
+	if (tokenCode == OPERATOR_TOKEN){
 		return getResultFromOperator((char *)root->value, execute(root->left), execute(root->right));
 	}
 

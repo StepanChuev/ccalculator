@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
 		normalized = normalize(expression);
 		tokens = getTokensFromExpression(normalized);
 
-		if (!strcmp(END_TOKEN, tokens[0].name)){
+		if (tokens[0].code == END_TOKEN){
 			fprintf(stderr, "empty expression\n");
 			freeTokens(tokens);
 			free(normalized);
