@@ -7,7 +7,7 @@
 #include "executor.h"
 
 double execute(BinaryTreeNode *root){
-	int tokenCode = getTokenCode(root->value, 0);
+	int tokenCode = getTokenCode(root->value, 0, END_TOKEN);
 
 	if (tokenCode == CONSTANT_TOKEN){
 		return getConstantValue(root->value);

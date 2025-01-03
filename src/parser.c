@@ -62,7 +62,7 @@ BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **stack){
 		return *current;
 	}
 
-	if (getTokenCode((*stack)->value, 0) == OPERATOR_TOKEN && (*stack)->next != NULL){
+	if (getTokenCode((*stack)->value, 0, END_TOKEN) == OPERATOR_TOKEN && (*stack)->next != NULL){
 		(*current)->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 		strcpy((char *)(*current)->value, (*stack)->value);
 		*stack = popFromStack(*stack);

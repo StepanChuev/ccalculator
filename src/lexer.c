@@ -9,14 +9,14 @@ Token *getTokensFromExpression(char *expression){
 	size_t tokensIndex = 0;
 	size_t startValueIndex = 0;
 	size_t lenTokenValue = 0;
-	int tokenCode = 0;
+	int tokenCode = END_TOKEN;
 
 	Token *tokens = (Token *)malloc(lenTokens * sizeof(Token));
 	tokens[0].value = (char *)malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
-	tokens[0].code = getTokenCode(expression, 0);
+	tokens[0].code = tokenCode = getTokenCode(expression, 0, tokenCode);
 
 	for (size_t i = 1; expression[i] != '\0'; i++){
-		tokenCode = getTokenCode(expression, i);
+		tokenCode = getTokenCode(expression, i, tokenCode);
 
 		if (tokensIndex + 1 >= lenTokens){
 			if ((long long int)lenTokens * 2 >= SIZE_MAX){
@@ -48,33 +48,52 @@ Token *getTokensFromExpression(char *expression){
 	return tokens;
 }
 
-int getTokenCode(char *expression, size_t index){
-	if (
+int getTokenCode(char *expression, size_t index, int prevTokenCode){
+	if (isNumberToken(expression, index, prevTokenCode)){
+		return NUMBER_TOKEN;
+	}
+
+	if (isConstantToken(expression, index, prevTokenCode)){
+		return CONSTANT_TOKEN;
+	}
+
+	if (isOperatorToken(expression, index, prevTokenCode)){
+		return OPERATOR_TOKEN;
+	}
+
+	return END_TOKEN;
+}
+
+int isOperatorToken(char *expression, size_t index, int prevTokenCode){
+	return (
+		strchr(ALL_OPERATORS, expression[index]) && 
+		(expression[index] != '-' || (index != 0 && expression[index - 1] == ')') || 
+			(prevTokenCode != OPERATOR_TOKEN && 
+			(index != 0 || (expression[index + 1] == '-' || expression[index + 1] == '\0')))
+		)
+	);
+}
+
+int isNumberToken(char *expression, size_t index, int prevTokenCode){
+	return (
 		isdigit(expression[index]) || expression[index] == '.' || 
 		(
 			expression[index] == '-' && isdigit(expression[index + 1]) && 
 			(index == 0 || (strchr(ALL_OPERATORS, expression[index - 1]) && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
 		) ||
 		((expression[index] == 'e' || expression[index] == 'E') && index > 0 && isdigit(expression[index - 1]) && isdigit(expression[index + 1]))
-	){
-		return NUMBER_TOKEN;
-	}
+	);
+}
 
-	if (
-		(expression[index] >= 'a' && expression[index] <= 'z') || 
+int isConstantToken(char *expression, size_t index, int prevTokenCode){
+	return (
+		(prevTokenCode == CONSTANT_TOKEN && (isalpha(expression[index]) || expression[index] == '_' || isdigit(expression[index]))) || 
+		(prevTokenCode != NUMBER_TOKEN && 
 		(
-			expression[index] == '-' && (expression[index + 1] >= 'a' && expression[index + 1] <= 'z') &&
-			(index == 0 || (strchr(ALL_OPERATORS, expression[index - 1]) && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
+			isalpha(expression[index]) || expression[index] == '_' || 
+			(expression[index] == '-' && (isalpha(expression[index + 1]) || expression[index + 1] == '_'))
 		)
-	){
-		return CONSTANT_TOKEN;
-	}
-
-	if (strchr(ALL_OPERATORS, expression[index])){
-		return OPERATOR_TOKEN;
-	}
-
-	return END_TOKEN;
+	));
 }
 
 char *normalize(char *srcExp){

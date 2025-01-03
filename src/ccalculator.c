@@ -81,6 +81,6 @@ int main(int argc, char *argv[]){
 	if (output != stdout && output != NULL){
 		fclose(output);
 	}
-
+	
 	return 0;
 }
