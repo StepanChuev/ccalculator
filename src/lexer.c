@@ -53,8 +53,8 @@ int getTokenCode(char *expression, size_t index, int prevTokenCode){
 		return NUMBER_TOKEN;
 	}
 
-	if (isConstantToken(expression, index, prevTokenCode)){
-		return CONSTANT_TOKEN;
+	if (isNameToken(expression, index, prevTokenCode)){
+		return NAME_TOKEN;
 	}
 
 	if (isOperatorToken(expression, index, prevTokenCode)){
@@ -75,7 +75,7 @@ int isOperatorToken(char *expression, size_t index, int prevTokenCode){
 }
 
 int isNumberToken(char *expression, size_t index, int prevTokenCode){
-	return (
+	return prevTokenCode != NAME_TOKEN && (
 		isdigit(expression[index]) || expression[index] == '.' || 
 		(
 			expression[index] == '-' && isdigit(expression[index + 1]) && 
@@ -85,10 +85,10 @@ int isNumberToken(char *expression, size_t index, int prevTokenCode){
 	);
 }
 
-int isConstantToken(char *expression, size_t index, int prevTokenCode){
+int isNameToken(char *expression, size_t index, int prevTokenCode){
 	return (
-		(prevTokenCode == CONSTANT_TOKEN && (isalpha(expression[index]) || expression[index] == '_' || isdigit(expression[index]))) || 
-		(prevTokenCode != NUMBER_TOKEN && 
+		(prevTokenCode == NAME_TOKEN && (isalpha(expression[index]) || expression[index] == '_' || isdigit(expression[index]))) || 
+		((prevTokenCode == OPERATOR_TOKEN || prevTokenCode == END_TOKEN) && 
 		(
 			isalpha(expression[index]) || expression[index] == '_' || 
 			(expression[index] == '-' && (isalpha(expression[index + 1]) || expression[index + 1] == '_'))
@@ -145,10 +145,11 @@ char *normalize(char *srcExp){
 }
 
 void freeTokens(Token *tokens){
-	size_t i;
+	size_t i = 0;
 
-	for (i = 0; tokens[i].code != END_TOKEN; i++){
+	while (tokens[i].code != END_TOKEN){
 		free(tokens[i].value);
+		i++;
 	}
 
 	free(tokens[i].value);

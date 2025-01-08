@@ -5,6 +5,7 @@
 #include "executor.h"
 #include "stack.h"
 #include "binaryTree.h"
+#include "names.h"
 #include "parser.h"
 
 static Token *lastParen = NULL;
@@ -13,7 +14,9 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 	BinaryTreeNode *currentNode = createBinaryTreeNode();
 	BinaryTreeNode *root = currentNode;
 	BinaryTreeNode *parenAST = NULL;
+	BinaryTreeNode *argAST = NULL;
 	Stack *stack = NULL;
+	double args[MAX_LEN_ARGS];
 
 	for (Token *currentToken = tokens; currentToken->code != END_TOKEN; currentToken++){
 		if (strchr(CLOSEPAREN_OPERATOR, currentToken->value[0])){
@@ -33,10 +36,27 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 			continue;
 		}
 
-		if (currentToken->code == NUMBER_TOKEN || currentToken->code == CONSTANT_TOKEN){
+		if (currentToken->code == NUMBER_TOKEN){
 			stack = pushToStack(stack);
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 			strcpy((char *)stack->value, currentToken->value);
+		}
+
+		else if (currentToken->code == NAME_TOKEN){
+			stack = pushToStack(stack);
+			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
+
+			if ((currentToken + 1)->value[0] == OPENPAREN_OPERATOR[0]){
+				argAST = buildASTFromTokens(currentToken + 2);
+				args[0] = execute(argAST);
+				sprintf((char *)stack->value, "%0.15lf", getNameValue(currentToken->value, args));
+				currentToken = lastParen;
+				freeBinaryTree(argAST);
+			}
+
+			else {
+				sprintf((char *)stack->value, "%0.15lf", getNameValue(currentToken->value, NULL));
+			}
 		}
 
 		else if (currentToken->code == OPERATOR_TOKEN){

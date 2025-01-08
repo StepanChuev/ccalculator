@@ -3,15 +3,11 @@
 #include <ctype.h>
 #include "operators.h"
 #include "lexer.h"
-#include "constants.h"
+#include "names.h"
 #include "executor.h"
 
 double execute(BinaryTreeNode *root){
 	int tokenCode = getTokenCode(root->value, 0, END_TOKEN);
-
-	if (tokenCode == CONSTANT_TOKEN){
-		return getConstantValue(root->value);
-	}
 
 	if (tokenCode == OPERATOR_TOKEN){
 		return getResultFromOperator((char *)root->value, execute(root->left), execute(root->right));
