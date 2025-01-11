@@ -4,7 +4,7 @@
 
 #include "operators.h"
 
-#define MAX_LEN_TOKEN_VALUE 312
+#define MAX_LEN_TOKEN_VALUE 330
 
 #define END_TOKEN 0
 #define OPERATOR_TOKEN 1

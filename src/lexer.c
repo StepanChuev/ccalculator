@@ -19,7 +19,7 @@ Token *getTokensFromExpression(char *expression){
 		tokenCode = getTokenCode(expression, i, tokenCode);
 
 		if (tokensIndex + 1 >= lenTokens){
-			if ((long long int)lenTokens * 2 >= SIZE_MAX){
+			if (lenTokens >= SIZE_MAX / 2 + 1){
 				lenTokens = SIZE_MAX;
 			}
 
@@ -49,16 +49,16 @@ Token *getTokensFromExpression(char *expression){
 }
 
 int getTokenCode(char *expression, size_t index, int prevTokenCode){
+	if (isOperatorToken(expression, index, prevTokenCode)){
+		return OPERATOR_TOKEN;
+	}
+
 	if (isNumberToken(expression, index, prevTokenCode)){
 		return NUMBER_TOKEN;
 	}
 
 	if (isNameToken(expression, index, prevTokenCode)){
 		return NAME_TOKEN;
-	}
-
-	if (isOperatorToken(expression, index, prevTokenCode)){
-		return OPERATOR_TOKEN;
 	}
 
 	return END_TOKEN;
@@ -75,14 +75,17 @@ int isOperatorToken(char *expression, size_t index, int prevTokenCode){
 }
 
 int isNumberToken(char *expression, size_t index, int prevTokenCode){
-	return prevTokenCode != NAME_TOKEN && (
+	return (prevTokenCode != NAME_TOKEN && (
 		isdigit(expression[index]) || expression[index] == '.' || 
 		(
 			expression[index] == '-' && isdigit(expression[index + 1]) && 
-			(index == 0 || (strchr(ALL_OPERATORS, expression[index - 1]) && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
+			(index == 0 || (prevTokenCode == OPERATOR_TOKEN && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
 		) ||
-		((expression[index] == 'e' || expression[index] == 'E') && index > 0 && isdigit(expression[index - 1]) && isdigit(expression[index + 1]))
-	);
+		(
+			(expression[index] == 'e' || expression[index] == 'E') && 
+			index > 0 && isdigit(expression[index - 1]) && isdigit(expression[index + 1])
+		)
+	));
 }
 
 int isNameToken(char *expression, size_t index, int prevTokenCode){
@@ -91,7 +94,8 @@ int isNameToken(char *expression, size_t index, int prevTokenCode){
 		((prevTokenCode == OPERATOR_TOKEN || prevTokenCode == END_TOKEN) && 
 		(
 			isalpha(expression[index]) || expression[index] == '_' || 
-			(expression[index] == '-' && (index == 0 || !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])) && (isalpha(expression[index + 1]) || expression[index + 1] == '_'))
+			(expression[index] == '-' && (isalpha(expression[index + 1]) || expression[index + 1] == '_') && 
+			(index == 0 || !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
 		)
 	));
 }
@@ -116,7 +120,7 @@ char *normalize(char *srcExp){
 				return normalized;
 			}
 
-			if ((long long int)lenNormalized * 2 >= limit){
+			if (lenNormalized >= limit / 2 + 1){
 				lenNormalized = limit;
 			}
 

@@ -30,7 +30,7 @@ char *getExpressionFromFile(FILE *file, char sep){
 				break;
 			}
 
-			if ((long long int)lenExpression * 2 >= limit){
+			if (lenExpression >= limit / 2 + 1){
 				lenExpression = limit;
 			}
 

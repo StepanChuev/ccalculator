@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 			printf(">>> ");
 
 			if ((expression = getExpressionFromStdin(lenExpression)) == NULL){
-				fprintf(stderr, "scan failed\n");
+				fprintf(stderr, "Scan failed\n");
 				free(expression);
 
 				continue;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 		//DEV
 
 		if (tokens[0].code == END_TOKEN){
-			fprintf(stderr, "empty expression\n");
+			fprintf(stderr, "Empty expression\n");
 			freeTokens(tokens);
 			free(normalized);
 			free(expression);
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
 		}
 
 		AST = buildASTFromTokens(tokens);
-		result = execute(AST);
+		result = executeAST(AST);
 
 		fprintf(output, "%0.15lf\n", result);
 

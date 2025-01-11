@@ -6,7 +6,7 @@ PREF_OBJ = ./obj/
 
 SRC = $(wildcard $(PREF_SRC)*.c)
 OBJ = $(patsubst $(PREF_SRC)%.c, $(PREF_OBJ)%.o, $(SRC))
-CFLAGS = -O0 -ggdb -o
+CFLAGS = -o
 
 $(TARGET) : $(OBJ)
 	$(CC) $(OBJ) $(CFLAGS) $(TARGET)

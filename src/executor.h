@@ -4,7 +4,7 @@
 
 #define EXECUTOR_H
 
-double execute(BinaryTreeNode *root);
+double executeAST(BinaryTreeNode *root);
 double *executeASTs(BinaryTreeNode **ASTs, size_t amountASTs);
 double getResultFromOperator(char *operator, double operand1, double operand2);
 

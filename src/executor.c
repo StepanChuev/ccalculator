@@ -7,11 +7,11 @@
 #include "names.h"
 #include "executor.h"
 
-double execute(BinaryTreeNode *root){
+double executeAST(BinaryTreeNode *root){
 	int tokenCode = getTokenCode(root->value, 0, END_TOKEN);
 
 	if (tokenCode == OPERATOR_TOKEN){
-		return getResultFromOperator((char *)root->value, execute(root->left), execute(root->right));
+		return getResultFromOperator((char *)root->value, executeAST(root->left), executeAST(root->right));
 	}
 
 	return atof(root->value);
@@ -22,7 +22,7 @@ double *executeASTs(BinaryTreeNode **ASTs, size_t amountASTs){
 	double *results = (double *)malloc(amountASTs * sizeof(double));
 
 	while (ASTs[i] != NULL && i < amountASTs){
-		results[i] = execute(ASTs[i]);
+		results[i] = executeAST(ASTs[i]);
 		i++;
 	}
 
