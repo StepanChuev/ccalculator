@@ -24,11 +24,10 @@ void freeBinaryTree(BinaryTreeNode *root){
 	free(root);
 }
 
-void setValueToBinaryTreeNode(BinaryTreeNode *node, void *newValue, size_t size){
-	if (node->value != NULL){
-		free(node->value);
+void freeBinaryTrees(BinaryTreeNode **trees){
+	for (size_t i = 0; trees[i] != NULL; i++){
+		freeBinaryTree(trees[i]);
 	}
 
-	node->value = malloc(size);
-	memcpy(node->value, newValue, size);
+	free(trees);
 }

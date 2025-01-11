@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
@@ -14,6 +15,18 @@ double execute(BinaryTreeNode *root){
 	}
 
 	return atof(root->value);
+}
+
+double *executeASTs(BinaryTreeNode **ASTs, size_t amountASTs){
+	size_t i = 0;
+	double *results = (double *)malloc(amountASTs * sizeof(double));
+
+	while (ASTs[i] != NULL && i < amountASTs){
+		results[i] = execute(ASTs[i]);
+		i++;
+	}
+
+	return results;
 }
 
 double getResultFromOperator(char *operator, double operand1, double operand2){

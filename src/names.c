@@ -15,6 +15,10 @@ double getNameValue(char *name, double *args){
 		return cbrt(args[0]);
 	}
 
+	if (!strcmp(POW_NAME, name)){
+		return pow(args[0], args[1]);
+	}
+
 	if (!strcmp(PI_NAME, name)){
 		return 3.1415926535897932384;
 	}

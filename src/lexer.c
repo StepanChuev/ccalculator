@@ -91,7 +91,7 @@ int isNameToken(char *expression, size_t index, int prevTokenCode){
 		((prevTokenCode == OPERATOR_TOKEN || prevTokenCode == END_TOKEN) && 
 		(
 			isalpha(expression[index]) || expression[index] == '_' || 
-			(expression[index] == '-' && (isalpha(expression[index + 1]) || expression[index + 1] == '_'))
+			(expression[index] == '-' && (index == 0 || !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])) && (isalpha(expression[index + 1]) || expression[index + 1] == '_'))
 		)
 	));
 }

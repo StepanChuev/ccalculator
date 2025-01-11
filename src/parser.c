@@ -8,19 +8,19 @@
 #include "names.h"
 #include "parser.h"
 
-static Token *lastParen = NULL;
+static Token *lastToken = NULL;
 
 BinaryTreeNode *buildASTFromTokens(Token *tokens){
 	BinaryTreeNode *currentNode = createBinaryTreeNode();
 	BinaryTreeNode *root = currentNode;
 	BinaryTreeNode *parenAST = NULL;
-	BinaryTreeNode *argAST = NULL;
+	BinaryTreeNode **argsAST = NULL;
 	Stack *stack = NULL;
-	double args[MAX_LEN_ARGS];
+	double *args = NULL;
 
 	for (Token *currentToken = tokens; currentToken->code != END_TOKEN; currentToken++){
-		if (strchr(CLOSEPAREN_OPERATOR, currentToken->value[0])){
-			lastParen = currentToken;
+		if (strchr(CLOSEPAREN_OPERATOR, currentToken->value[0]) || strchr(COMMA_OPERATOR, currentToken->value[0])){
+			lastToken = currentToken;
 			break;
 		}
 
@@ -31,7 +31,7 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 			sprintf((char *)stack->value, "%0.15lf", execute(parenAST));
 			freeBinaryTree(parenAST);
-			currentToken = lastParen;
+			currentToken = lastToken;
 
 			continue;
 		}
@@ -47,11 +47,12 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 			stack->value = malloc(MAX_LEN_TOKEN_VALUE * sizeof(char));
 
 			if ((currentToken + 1)->value[0] == OPENPAREN_OPERATOR[0]){
-				argAST = buildASTFromTokens(currentToken + 2);
-				args[0] = execute(argAST);
+				argsAST = buildASTsFromArgs(currentToken + 2);
+				args = executeASTs(argsAST, MAX_LEN_ARGS);
 				sprintf((char *)stack->value, "%0.15lf", getNameValue(currentToken->value, args));
-				currentToken = lastParen;
-				freeBinaryTree(argAST);
+				currentToken = lastToken;
+				free(args);
+				freeBinaryTrees(argsAST);
 			}
 
 			else {
@@ -73,6 +74,25 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 	currentNode = moveElementsToAST(&currentNode, &stack);
 
 	return root;
+}
+
+BinaryTreeNode **buildASTsFromArgs(Token *token){
+	size_t i = 0;
+	BinaryTreeNode **argsAST = (BinaryTreeNode **)malloc((MAX_LEN_ARGS + 1) * sizeof(BinaryTreeNode *));
+
+	while (i < MAX_LEN_ARGS){
+		argsAST[i] = buildASTFromTokens(token);
+		token = lastToken + 1;
+		i++;
+
+		if (lastToken->value[0] == CLOSEPAREN_OPERATOR[0]){
+			break;
+		}
+	}
+
+	argsAST[i] = NULL;
+
+	return argsAST;
 }
 
 BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **stack){

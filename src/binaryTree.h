@@ -12,7 +12,7 @@ typedef struct BinaryTreeNode {
 
 BinaryTreeNode *createBinaryTreeNode(void);
 void freeBinaryTree(BinaryTreeNode *root);
-void setValueToBinaryTreeNode(BinaryTreeNode *node, void *newValue, size_t size);
+void freeBinaryTrees(BinaryTreeNode **trees);
 
 
 #endif

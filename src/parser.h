@@ -8,5 +8,6 @@
 
 BinaryTreeNode *buildASTFromTokens(Token *tokens);
 BinaryTreeNode *moveElementsToAST(BinaryTreeNode **current, Stack **stack);
+BinaryTreeNode **buildASTsFromArgs(Token *token);
 
 #endif
