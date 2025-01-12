@@ -2,7 +2,7 @@
 CCALCULATOR is fast console full expression calculator written on C. 
 
 ### Why ccalculator?
- 1. I think that for a lot of programms CLI better than GUI, because programms that use CLI is portable and more functional.
+ 1. I think that for a lot of programms CLI better than GUI, because programms that use CLI is more portable and more functional...
  2. ccalculator take good input/output (i/o), you can use files or standart i/o and you can combine them.
  3. You can work with full expressions ```pow(-5, 2) - 4 * -3 * 2```.
 
@@ -43,5 +43,6 @@ When you started ccalculator, you can enter the expression and you must observe 
 ### Plans
  1. User errors
  2. Safety working with memory or custom *exit*
- 3. Special symbol for previous expression's answer
- 4. Additional options for disable *normalize*, errors etc.
+ 3. Scientific notation and precision
+ 4. Special symbol for previous expression's answer
+ 5. Additional options for disable *normalize*, errors etc.
