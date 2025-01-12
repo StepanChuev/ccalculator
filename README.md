@@ -6,14 +6,6 @@ CCALCULATOR is fast console full expression calculator written on C.
  2. ccalculator take good input/output (i/o), you can use files or standart i/o and you can combine them.
  3. You can work with full expressions ```pow(-5, 2) - 4 * -3 * 2```.
 
-### Building from source
-```
-  git clone https://github.com/StepanChuev/ccalculator.git
-  cd ccalculator
-  mkdir obj
-  make
-```
-
 ### Usage
 #### Synopsis
 ```
