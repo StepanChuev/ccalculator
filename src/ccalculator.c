@@ -10,7 +10,6 @@
 
 int main(int argc, char *argv[]){
 	const size_t lenExpression = 1024;
-	size_t i = 0;
 	char *expression = NULL;
 	char *normalized = NULL;
 	Token *tokens = NULL;
@@ -53,17 +52,6 @@ int main(int argc, char *argv[]){
 
 		normalized = normalize(expression);
 		tokens = getTokensFromExpression(normalized);
-
-		// DEV
-		// size_t j = 0;
-
-		// while (tokens[j].code != END_TOKEN){
-		// 	printf("%d(%s) ", tokens[j].code, tokens[j].value);
-		// 	j++;
-		// }
-
-		// printf("%d(%s)\n", tokens[j].code, tokens[j].value);
-		//DEV
 
 		if (tokens[0].code == END_TOKEN){
 			fprintf(stderr, "Empty expression\n");

@@ -19,7 +19,7 @@ Token *getTokensFromExpression(char *expression){
 		tokenCode = getTokenCode(expression, i, tokenCode);
 
 		if (tokensIndex + 1 >= lenTokens){
-			if (lenTokens >= SIZE_MAX / 2 + 1){
+			if (lenTokens >= SIZE_MAX / 2){
 				lenTokens = SIZE_MAX;
 			}
 
@@ -69,7 +69,8 @@ int isOperatorToken(char *expression, size_t index, int prevTokenCode){
 		strchr(ALL_OPERATORS, expression[index]) && 
 		(expression[index] != '-' || (index != 0 && expression[index - 1] == ')') || 
 			(prevTokenCode != OPERATOR_TOKEN && 
-			(index != 0 || (expression[index + 1] == '-' || expression[index + 1] == '\0')))
+			(index != 0 || (expression[index + 1] == '-' || expression[index + 1] == '\0')) &&
+			!(index != 0 && prevTokenCode == NUMBER_TOKEN && (expression[index - 1] == 'e' || expression[index - 1] == 'E')))
 		)
 	);
 }
@@ -79,11 +80,14 @@ int isNumberToken(char *expression, size_t index, int prevTokenCode){
 		isdigit(expression[index]) || expression[index] == '.' || 
 		(
 			expression[index] == '-' && isdigit(expression[index + 1]) && 
-			(index == 0 || (prevTokenCode == OPERATOR_TOKEN && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
+			(
+				index == 0 || expression[index - 1] == 'e' || expression[index - 1] == 'E' || 
+				(prevTokenCode == OPERATOR_TOKEN && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1]))
+			)
 		) ||
 		(
 			(expression[index] == 'e' || expression[index] == 'E') && 
-			index > 0 && isdigit(expression[index - 1]) && isdigit(expression[index + 1])
+			index > 0 && isdigit(expression[index - 1])
 		)
 	));
 }
@@ -114,13 +118,13 @@ char *normalize(char *srcExp){
 		if (normalizedIndex + 3 >= lenNormalized){
 			if (lenNormalized >= limit){
 				normalized[normalizedIndex++] = srcExp[i];
-				strcpy(normalized + normalizedIndex, END_TOKEN);
+				strcpy(normalized + normalizedIndex, END_TOKEN_VALUE);
 				normalized[++normalizedIndex] = '\0';
 
 				return normalized;
 			}
 
-			if (lenNormalized >= limit / 2 + 1){
+			if (lenNormalized >= limit / 2){
 				lenNormalized = limit;
 			}
 
