@@ -88,6 +88,9 @@ int isNumberToken(char *expression, size_t index, int prevTokenCode){
 		(
 			(expression[index] == 'e' || expression[index] == 'E') && 
 			index > 0 && isdigit(expression[index - 1])
+		) ||
+		(
+			prevTokenCode == NUMBER_TOKEN && isalpha(expression[index])
 		)
 	));
 }
