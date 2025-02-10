@@ -4,6 +4,19 @@
 #include <stdint.h>
 #include "io.h"
 
+void fprintBin(FILE *file, unsigned long int num){
+	int flag = 0, bit = 0;
+
+	for (int i = sizeof(unsigned long int) * 8 - 1; i >= 0; i--){
+		bit = (num >> i) & 1;
+		flag = flag | bit;
+
+		if (flag || i == 0){
+			fprintf(file, "%d", bit);
+		}
+	}
+}
+
 char *getExpressionFromStdin(size_t maxLen){
 	char *expression = (char *)malloc(maxLen * sizeof(char));
 	char *newln = NULL;
@@ -47,21 +60,21 @@ char *getExpressionFromFile(FILE *file, char sep){
 	return expression;
 }
 
-char *getFilePathByFlag(const char *flag, int argc, char *argv[]){
-	char *path = NULL;
+char *getValueByFlag(const char *flag, int argc, char *argv[]){
+	char *value = NULL;
 
 	for (int i = 0; i < argc - 1; i++){
 		if (!strcmp(flag, argv[i])){
-			path = argv[i + 1];
+			value = argv[i + 1];
 			break;
 		}
 	}
 
-	return path;
+	return value;
 }
 
 FILE *getIOFile(const char *flag, const char *mode, int argc, char *argv[]){
-	char *path = getFilePathByFlag(flag, argc, argv);
+	char *path = getValueByFlag(flag, argc, argv);
 	FILE *file = NULL;
 
 	if (path == NULL){
