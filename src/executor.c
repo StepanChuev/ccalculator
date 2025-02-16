@@ -51,13 +51,11 @@ double getResultFromOperator(char *operator, double operand1, double operand2){
 
 double numberTokenToDouble(char *number){
 	int negnum = (number[0] == '-');
-	int tmp = negnum + 1;
+	int base = DEFINE_BASE(number[negnum + 1]);
 
-	if (isdigit(number[tmp]) || number[tmp] == '.' || number[tmp] == '\0'){
+	if (base == 10){
 		return atof(number);
 	}
 
-	tmp = DEFINE_BASE(number[tmp]);
-
-	return (negnum ? -1.0 : 1.0) * (double)strtoul(number + 2 + negnum, NULL, tmp);
+	return (negnum ? -1.0 : 1.0) * (double)strtoul(number + 2 + negnum, NULL, base);
 }

@@ -8,6 +8,6 @@
 double executeAST(BinaryTreeNode *root);
 double *executeASTs(BinaryTreeNode **ASTs, size_t amountASTs);
 double getResultFromOperator(char *operator, double operand1, double operand2);
-double numberTokenToDouble(char *number); // convert dec, octodec and hex numbers to double
+double numberTokenToDouble(char *number); // convert dec, octal and hex numbers to double
 
 #endif
