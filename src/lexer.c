@@ -82,7 +82,7 @@ int isNumberToken(char *expression, size_t index, int prevTokenCode){
 			expression[index] == '-' && isdigit(expression[index + 1]) && 
 			(
 				index == 0 || expression[index - 1] == 'e' || expression[index - 1] == 'E' || 
-				(prevTokenCode == OPERATOR_TOKEN && !strchr(CLOSEPAREN_OPERATOR, expression[index - 1]))
+				(prevTokenCode == OPERATOR_TOKEN && CLOSEPAREN_OPERATOR[0] != expression[index - 1])
 			)
 		) ||
 		(
@@ -102,7 +102,7 @@ int isNameToken(char *expression, size_t index, int prevTokenCode){
 		(
 			isalpha(expression[index]) || expression[index] == '_' || 
 			(expression[index] == '-' && (isalpha(expression[index + 1]) || expression[index + 1] == '_') && 
-			(index == 0 || !strchr(CLOSEPAREN_OPERATOR, expression[index - 1])))
+			(index == 0 || CLOSEPAREN_OPERATOR[0] != expression[index - 1]))
 		)
 	));
 }

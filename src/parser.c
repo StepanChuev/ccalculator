@@ -19,12 +19,12 @@ BinaryTreeNode *buildASTFromTokens(Token *tokens){
 	double *args = NULL;
 
 	for (Token *currentToken = tokens; currentToken->code != END_TOKEN; currentToken++){
-		if (strchr(CLOSEPAREN_OPERATOR, currentToken->value[0]) || strchr(COMMA_OPERATOR, currentToken->value[0])){
+		if (CLOSEPAREN_OPERATOR[0] == currentToken->value[0] || COMMA_OPERATOR[0] == currentToken->value[0]){
 			lastToken = currentToken;
 			break;
 		}
 
-		if (strchr(OPENPAREN_OPERATOR, currentToken->value[0])){
+		if (OPENPAREN_OPERATOR[0] == currentToken->value[0]){
 			parenAST = buildASTFromTokens(currentToken + 1);
 
 			stack = pushToStack(stack);
