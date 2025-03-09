@@ -2,9 +2,9 @@
 #define IO_H
 
 #include <stdio.h>
-#define FILEIN_FLAG "--filein"
-#define FILEOUT_FLAG "--fileout"
-#define BASE_FLAG "--base"
+#define FILEIN_FLAG "-i"
+#define FILEOUT_FLAG "-o"
+#define BASE_FLAG "-b"
 
 void fprintBin(FILE *file, unsigned long int num);
 char *getExpressionFromStdin(size_t maxLen);
