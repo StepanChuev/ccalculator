@@ -8,7 +8,7 @@ CCALCULATOR is fast console calculator written on C.
 ### Usage
 #### Synopsis
 ```
-./ccalculator [-i|-o *file*] [-o|-i *file*] [-b *base*]
+./ccalculator [-i|-o FILE] [-o|-i FILE] [-b BASE]
 ```
 
 #### Options
